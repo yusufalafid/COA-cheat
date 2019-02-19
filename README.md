@@ -135,26 +135,62 @@ COA Cheat Sheet
    
    - image: cirros-0.3.4-x86_64-uec
    - flavor: m1.tiny
-   - keypair: key1
+   - keypair: mypubkey1
    - security group: default
-
+    ```
+    nova boot instance2 --image cirros-0.3.4-x86_64-uec --flavor m1.tiny --key-name mypubkey1 --nic net-name=net-int --security-group default
+    ```
 6. Create a pair key with ssh-keygen (we want to have a keypair created outside of openstack). Now, add the created key with openstack with name "mykey1"
+   ```
+   ssh-keygen -q -f keypair
+   nova keypair-add --pub-key keypair.pub mykey1  
+   ```
 7. This time, create a pair key directly with openstack and name it "mykey2"
+   ```
+   openstack keypair create mykey2 > mykey2.pem
+   ```
 8. Provision the following instance
-9.  Create a floating IP (from the public subnet)and assign it to the instance7
+   - name: instance7
+   - image: cirros-0.3.4-x86_64-uec
+   - flavor: m1.tiny
+   - keypair: mykey1
+   - security group: default
+      
+   ```
+   nova boot --flavor m1.tiny --image cirros-0.3.4-x86_64-uec --key-name mykey1 --security-groups default --nic net-id=41c0a2ee-e780-4efe-beba-05abbb658b52 instance7
+
+   ```
+9.  Create a floating IP (from the public subnet) and assign it to the instance7
+    ```
+    openstack floating ip create --project admin --project-domain default net-ext
+    ```
 10. Log to the machine console using the keypair mykey1 using the floating IP assigned to the instance7
+    ```
+    ssh -i mykey1.pem ubuntu@floating-ip
+    ```
 
 ### Quotas
 
-1. Make sure tenant demo have the following limits
-2. Make sure user demo from tenant demo have the following limits
+1. Make sure tenant demo have the following limits 
+- 15 backups
+- 15 000 gigabytes
+- 15 networks
+- 15 subnets
+2. Make sure user demo from tenant demo have the following limits 
+- 15 cpu cores 15
+- floating ips
+    ```
+    neutron quota-update --tenant-id eb8ab62d9d3e493f8a1cb52953070949 --network 15 --subnet 15
+    cinder quotas-update --backups 15 --gigabytes 15000  eb8ab62d9d3e493f8a1cb52953070949
+    nova quota-update --cores 15 --floating-ips 15 eb8ab62d9d3e493f8a1cb52953070949
+    ```
 3. Using p1_user1/openstack, check that project1 cannot create more instances
 4. Make sure that users in project1 can create 2 more instances
 5. Check that the new quotas is also applied for user=p1_user2,pass=openstack
 6. We want user=p2_user1,pass=openstack is able to create only 2 floating ips, but 5 floating ips for p2_user2/openstack
 7. Change the default quotas for any new project to:
 8. Create project "project3" and user "user3" within.
-9. Again, change the default quotas for any new project to:
+9.  Again, change the default quotas for any new project to:
 10. Create project "project4" and two users "user41" and "user42" within.
 11. Change the quotas for "user41" within "project4" to:
     
