@@ -214,6 +214,32 @@ openstack volume create --snapshot volume-snapshot-cli --size 1 restored-snapsho
 openstack volume backup create --name volume-backup-cli --description ""COA Cheat Sheet Cinder" --container volume-backup-container-cli volume-cli
 ```
 
+### Glance
+1. Create Image Ex : Cirros
+```
+# download cirros image
+wget http://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img
+
+# create image openstack
+openstack image create --file cirros-0.4.0-x86_64-disk.img --disk-format qcow2 --min-disk 1 --min-ram 512 --property description='Cirros Cloud Image for COA Exam Prep' cirros-cli
+```
+
+2. Download image cirros-cli
+```
+openstack image save --file /tmp/mydownloadedimage.img cirros-cli
+```
+3. Share cirros-cli to specified project example marketing project
+```
+# show project id
+openstack project list | grep marketing
+
+# share image to marketing project
+openstack image add project cirros-cli 99a06694e4444e038d632aca0cc1a89e
+```
+
+`99a06694e4444e038d632aca0cc1a89e is marketing project ID.`
+
+
 ### Quotas
 
 1. Make sure tenant demo have the following limits 
