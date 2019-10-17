@@ -171,6 +171,49 @@ COA Cheat Sheet
     ssh -i mykey1.pem ubuntu@floating-ip
     ```
 
+
+### Cinder
+1. Create Volume
+
+```
+# volume name : volume-cli
+# volume size : 1 GB
+openstack volume create --size 1 volume-cli --description "COA Cheat Sheet Cinder"
+```
+
+2. Attach volume `volume-cli` to instance `instance-cli`
+```
+openstack server add volume instance-cli volume-cli
+```
+
+3. Manage volume inside a instance (ssh to `instance-cli`)
+```
+sudo -i
+fdisk -l
+fdisk /dev/vdb
+mkfs.ext4 /dev/vdb1
+df -h
+mount /dev/vdb1 /mnt
+umount /dev/vdb1 /mnt
+```
+
+4. Create snapshot from volume `volume-cli`
+```
+# volume name : volume-cli
+# snapshot volume name : volume-snapshot-cli
+openstack snapshot create --name volume-snapshot-cli volume-cli
+```
+
+5. Create volume from  snapshot `volume-snapshot-cli`
+```
+openstack volume create --snapshot volume-snapshot-cli --size 1 restored-snapshot-volume-cli
+```
+
+6. Backup volume `volume-cli` ke container (object storage)
+```
+openstack volume backup create --name volume-backup-cli --description ""COA Cheat Sheet Cinder" --container volume-backup-container-cli volume-cli
+```
+
 ### Quotas
 
 1. Make sure tenant demo have the following limits 
