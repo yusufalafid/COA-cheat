@@ -1,3 +1,5 @@
+![Openstack logo](https://object-storage-ca-ymq-1.vexxhost.net/swift/v1/6e4619c416ff4bd19e1c087f27a43eea/www-images-prod/openstack-logo/OpenStack-Logo-Horizontal.png)
+
 COA Cheat Sheet
 ===============
 
